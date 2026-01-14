@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your Ad Is Live – Invoice & Ad Details - Seductive Seekers</title>
+</head>
+<body style="margin:0; padding:0; background-color:#f6f6f6; font-family:Helvetica, Arial, sans-serif;">
+  <!-- Outer Wrapper -->
+  <div style="width:100%; background-color:#f6f6f6; padding:30px 0;">
+    <table align="center" width="600" cellpadding="0" cellspacing="0" style="background:#fff; border-radius:8px; overflow:hidden; box-shadow:0 2px 10px rgba(0,0,0,0.05);">
+      <!-- Header -->
+      <tr>
+        <td style="background:#000000; text-align:center; padding:25px 10px;">
+          <img src="https://admin.seductiveseekers.com/assets/logo-CSc8g1vO.png" alt="Seductive Seekers" width="260" style="display:block; margin:0 auto 10px auto;" />
+          <p style="margin:5px 0 0 0; color:#ffdce5; font-size:13px;">Never Feel Lonely Again with Seductive Companions.</p>
+        </td>
+      </tr>
+      <!-- Body -->
+      <tr>
+        <td style="padding:35px 40px; color:#333;">
+          <h2 style="color:#c2185b; font-size:20px; font-weight:600; margin-top:0; text-align:center;">
+            Thank You for Posting Your Ad!
+          </h2>
+          <p style="font-size:15px; line-height:1.6;">
+            Dear <strong>{{advertiser_name}}</strong>,
+          </p>
+          <p style="font-size:15px; line-height:1.6;">
+            Thank you for posting your ad on <strong>Seductive Seekers</strong>! Your advertisement is now live and visible to potential clients. Below are the details of your ad and transaction:
+          </p>
+          <h3 style="color:#c2185b; font-size:16px; margin-top:30px;">Transaction Details</h3>
+          <table style="width:100%; border-collapse:collapse; margin-bottom:20px;">
+            <thead>
+              <tr style="background-color:#f2f2f2;">
+                <th style="padding:10px; border:1px solid #ddd; text-align:left;">Payment Method</th>
+                <th style="padding:10px; border:1px solid #ddd; text-align:left;">Amount Paid</th>
+                <th style="padding:10px; border:1px solid #ddd; text-align:left;">Transaction ID</th>
+                <th style="padding:10px; border:1px solid #ddd; text-align:left;">Date & Time</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="padding:10px; border:1px solid #ddd;">{{payment_method}}</td>
+                <td style="padding:10px; border:1px solid #ddd;">
+                  <img src="https://api.seductiveseekers.com/uploads/allType/1748683410632-seductive-3x-credit-icon.png" alt="Credits" style="width:20px; height:20px; vertical-align:middle; margin-right:5px;" />
+                  {{transaction_amount}}
+                </td>
+                <td style="padding:10px; border:1px solid #ddd;">{{transaction_id}}</td>
+                <td style="padding:10px; border:1px solid #ddd;">{{transaction_date_time}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <h3 style="color:#c2185b; font-size:16px; margin-top:30px;">Ad Details</h3>
+          <table style="width:100%; border-collapse:collapse;">
+            <thead>
+              <tr style="background-color:#f2f2f2;">
+                <th style="padding:10px; border:1px solid #ddd; text-align:left;">Ad Thumbnail</th>
+                <th style="padding:10px; border:1px solid #ddd; text-align:left;">Ad Title</th>
+                <th style="padding:10px; border:1px solid #ddd; text-align:left;">Plan Selected & Duration</th>
+                <th style="padding:10px; border:1px solid #ddd; text-align:left;">Cost</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="padding:10px; border:1px solid #ddd; text-align:center;">
+                  <a href="{{ad_link}}" target="_blank">
+                    <img src="{{ad_thumbnail}}" alt="Ad Thumbnail" style="width:100px; height:100px; object-fit:cover; border-radius:6px;" />
+                  </a>
+                </td>
+                <td style="padding:10px; border:1px solid #ddd;">
+                  <a href="{{ad_link}}" target="_blank" style="color:#c2185b; text-decoration:none;">{{ad_title}}</a>
+                </td>
+                <td style="padding:10px; border:1px solid #ddd;">{{plan_details}}</td>
+                <td style="padding:10px; border:1px solid #ddd;">
+                  <img src="https://api.seductiveseekers.com/uploads/allType/1748683410632-seductive-3x-credit-icon.png" alt="Credits" style="width:20px; height:20px; vertical-align:middle; margin-right:5px;" />
+                  {{plan_cost}}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <p style="font-size:15px; line-height:1.6; margin-top:30px;">
+            You can manage or update your ad anytime from your account dashboard. If you have any questions or need assistance, feel free to contact our support team.
+          </p>
+          <p style="font-size:15px; line-height:1.6;">
+            We appreciate your business and look forward to helping you connect with more clients!
+          </p>
+          <p style="font-size:15px; line-height:1.6;">
+            Best Regards,<br><strong>Seductive Seekers Team</strong>
+          </p>
+        </td>
+      </tr>
+      <!-- Footer -->
+      <tr>
+        <td style="background:#fafafa; text-align:center; padding:20px 10px; border-top:1px solid #eee;">
+          <p style="font-size:13px; color:#999; margin:0;">
+            This is an automated message. Please do not reply directly to this email.
+          </p>
+          <p style="font-size:12px; color:#bbb; margin:5px 0 0 0;">
+            {{companyAddress}}
+          </p>
+          <div style="margin-top:10px;">
+            <a href="https://seductiveseekers.com" style="text-decoration:none; color:#c2185b; font-size:13px;">Visit our website</a> |
+            <a href="https://seductiveseekers.com/complaint-resolution-policy" style="text-decoration:none; color:#c2185b; font-size:13px;">Privacy Policy</a>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div>
+</body>
+</html>
