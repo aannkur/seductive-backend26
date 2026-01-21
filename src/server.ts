@@ -7,29 +7,37 @@ import { seedTags } from "./models/tag.model";
 
 const PORT = process.env.PORT || 3010;
 
-sequelize
-  .sync({ alter: true })
-  .then(async () => {
-    console.log("=================> Database synchronized <=================");
-    // Seed countries
-    console.log("=================> Seeding Database <=================");
-    await seedCountries();
-    // Seed cities
-    await seedCities();
-    // Seed tags
-    await seedTags();
-    console.log(
-      "=================> Database seeded successfully <================="
-    );
-    app.listen(PORT, () =>
-      console.log(
-        `=================> Server running on port ${PORT} <=================`
-      )
-    );
-  })
-  .catch((error) => {
-    console.error(
-      "xxxxxxxxxxxxxxx Unable to sync the database: xxxxxxxxxxxxxxx",
-      error
-    );
-  });
+const shouldSync = process.env.DB_SYNC === "true";
+const shouldSeed = process.env.DB_SEED === "true";
+
+
+  (async () => {
+    try {
+      if (shouldSync) {
+        await sequelize.sync({ alter: true });
+        console.log("=================> Database synchronized <=================");
+      }
+
+      if (shouldSeed) {
+        console.log("=================> Seeding Database <=================");
+
+          await seedCountries();
+          await seedCities();
+          await seedTags();
+
+        console.log("=================> Database seeded successfully <=================");
+      }
+
+      app.listen(PORT, () =>
+        console.log(
+          `=================> Server running on port ${PORT} <=================`
+        )
+      );
+    } catch (error) {
+      console.error(
+        "xxxxxxxxxxxxxxx Startup failed xxxxxxxxxxxxxxx",
+        error
+      );
+    }
+  })();
+

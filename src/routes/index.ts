@@ -5,10 +5,15 @@ import clientPreferencesRoutes from "./clientPreferences.routes";
 import countryRoutes from "./country.routes";
 import cityRoutes from "./city.routes";
 import tagRoutes from "./tag.routes";
-import userTagsRoutes from "./userTags.routes";
+import userTagsRoutes from "./userTags.routes"; 
 import userAvailabilityRoutes from "./userAvailability.routes";
 import galleryRoutes from "./gallery.routes";
 import userRoutes from "./user.routes";
+import ContactUs  from "./contactUs.route";
+import NewsLetter from "./NewsLetter.route"
+import Setting from "./setting.routes"
+import Admin from "./admin/index"
+import Faq from "./getfaq.route"
 
 const router = Router();
 
@@ -27,6 +32,16 @@ router.use("/user-tags", userTagsRoutes);
 router.use("/gallery", galleryRoutes);
 router.use("/user", userRoutes);
 
+// Contact Us route
+router.use("/contact-us", ContactUs);
+// News Letter Route
+router.use("/news-letter",NewsLetter);
+
+// setting route
+router.use("/setting",Setting);
 // Admin routes
+router.use("/admin",Admin)
+// faq routes
+router.use("/faq",Faq)
 
 export default router;

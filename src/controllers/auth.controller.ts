@@ -106,7 +106,7 @@ export const signupController = async (
 ): Promise<Response> => {
   try {
     const result = await signupService(req.body);
-
+    
     const response: ApiResponse<typeof result> = {
       success: true,
       message: result.message,
@@ -146,7 +146,7 @@ export const verifyOtpController = async (
     res.cookie("session", result.token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      sameSite: "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
@@ -329,7 +329,8 @@ export const logoutController = async (
     res.clearCookie("session", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      // sameSite: "strict", change in some time 
+      sameSite: "lax",
     });
 
     const response: ApiResponse<typeof result> = {

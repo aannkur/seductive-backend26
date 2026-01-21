@@ -234,6 +234,9 @@ const MESSAGES = {
   ONLY_IMAGE_VIDEO_ALLOWED: "Only image and video files are allowed",
   FILE_TOO_LARGE:
     "{fileType} file is too large. Maximum size is {maxSizeMB}MB.",
+
+  // Contact Us messages
+  CONTACT_US_CREATED: "Message sent successfully.",
 };
 
 export { MESSAGES };

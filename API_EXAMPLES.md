@@ -4471,6 +4471,48 @@ curl -X PUT http://localhost:3010/api/user \
   }'
 ```
 
+
+### contact us message post
+
+```bash
+curl --location 'http://localhost:3010/api/contact-us/' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "full_name": "john doe",
+    "email": "john.doe@example.com",
+    "help_topic":"demo",
+    "message": "Message must be at least 5 characters"
+}'
+
+```
+
+```json
+    {
+        "success": true,
+        "message": "Message sent successfully.",
+        "data": {
+            "id": 1,
+            "full_name": "john doe",
+            "email": "john.doe@example.com",
+            "help_topic": "demo",
+            "message": "Message must be at least 5 characters",
+            "updatedAt": "2026-01-16T07:16:43.081Z",
+            "createdAt": "2026-01-16T07:16:43.081Z"
+        }
+    }
+
+    {
+        "success": false,
+        "message": "Validation failed",
+        "errors": [
+            {
+                "field": "message",
+                "message": "Message must be at least 5 characters",
+                "code": "too_small"
+            }
+        ]
+    }
+```
 **Note:** The second image will be automatically deleted from S3 and database.
 
 ---

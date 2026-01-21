@@ -9,6 +9,8 @@ import UserGallery from "./userGallery.model";
 import UserTags from "./userTags.model";
 import UserAvailability from "./userAvailability.model";
 import UserRates from "./userRates.model";
+import ContactUs from "./contact-us.model";
+import Faq from "./faq.model";
 
 // Export all models
 export {
@@ -22,6 +24,8 @@ export {
   UserTags,
   UserAvailability,
   UserRates,
+  ContactUs,
+  Faq
 };
 export default {
   User,
@@ -34,4 +38,6 @@ export default {
   UserTags,
   UserAvailability,
   UserRates,
+  ContactUs,
+  Faq
 };
