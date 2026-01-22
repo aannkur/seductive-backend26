@@ -15,6 +15,7 @@ import Setting from "./setting.routes"
 import Admin from "./admin/index"
 import Faq from "./getfaq.route"
 import Ad from "./adv.route"
+import chatRoutes from "./chat.routes"
 
 const router = Router();
 
@@ -46,5 +47,7 @@ router.use("/admin",Admin)
 router.use("/faq",Faq)
 // Ad routes
 router.use("/ad",Ad)
+// Chat routes
+router.use("/chat",chatRoutes)
 
 export default router;

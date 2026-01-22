@@ -12,6 +12,9 @@ import UserRates from "./userRates.model";
 import ContactUs from "./contact-us.model";
 import Faq from "./faq.model";
 import Ad from "./ad.model"
+import Message from "./message.model";
+import Conversation from "./conversation.model";
+import ChatRequest from "./chatRequest.model";
 
 // Export all models
 export {
@@ -27,7 +30,10 @@ export {
   UserRates,
   ContactUs,
   Faq,
-  Ad
+  Ad,
+  Message,
+  Conversation,
+  ChatRequest
 };
 export default {
   User,
@@ -42,5 +48,8 @@ export default {
   UserRates,
   ContactUs,
   Faq,
-  Ad
+  Ad,
+  Message,
+  Conversation,
+  ChatRequest
 };

@@ -237,6 +237,10 @@ const MESSAGES = {
 
   // Contact Us messages
   CONTACT_US_CREATED: "Message sent successfully.",
+
+  //chat messages
+   MESSAGE_SENT: "Message sent successfully",
+ 
 };
 
 export { MESSAGES };

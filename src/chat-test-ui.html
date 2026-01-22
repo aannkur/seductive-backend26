@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Chat System – Debug UI</title>
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; background:#f4f6f8; margin:0; padding:0; }
+    .container { display:flex; height:100vh; }
+    .sidebar { width:280px; background:#1f2933; color:#fff; padding:15px; box-sizing:border-box; }
+    .sidebar h3 { margin-top:0; }
+    .sidebar input, .sidebar textarea, .sidebar button { width:100%; margin-bottom:8px; }
+    .sidebar button { padding:6px; }
+
+    .main { flex:1; display:flex; flex-direction:column; }
+    .topbar { background:#fff; padding:10px; border-bottom:1px solid #ddd; }
+    .chat-window { flex:1; overflow-y:auto; padding:15px; background:#fff; }
+    .input-bar { border-top:1px solid #ddd; padding:10px; background:#fafafa; display:flex; gap:10px; }
+
+    .msg { margin-bottom:8px; max-width:70%; padding:8px 12px; border-radius:12px; font-size:14px; }
+    .me { background:#d1e7dd; margin-left:auto; }
+    .other { background:#e2e3e5; }
+    .system { background:#f8d7da; font-style:italic; }
+
+    .log-panel { height:180px; overflow-y:auto; background:#000; color:#0f0; font-size:12px; padding:8px; }
+
+    .row { margin-bottom:8px; }
+    label { font-size:12px; display:block; margin-bottom:3px; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- LEFT: CONTROL PANEL -->
+  <div class="sidebar">
+    <h3>Socket Auth</h3>
+
+    <label>JWT Token</label>
+    <textarea id="token" rows="3"></textarea>
+    <button onclick="connectSocket()">Connect Socket</button>
+    <button onclick="joinPersonalRoom()">Join Personal Room</button>
+
+    <hr />
+
+    <h3>Conversation</h3>
+
+    <label>Conversation ID</label>
+    <input type="number" id="conversationId" />
+    <button onclick="joinConversation()">Join Conversation</button>
+    <button onclick="leaveConversation()">Leave Conversation</button>
+
+    <label>Receiver User ID</label>
+    <input type="number" id="receiverId" />
+
+    <button onclick="markAsRead()">Mark As Read</button>
+
+    <hr />
+
+    <h3>Typing & Online</h3>
+
+    <button onclick="sendTyping()">Typing</button>
+    <button onclick="sendStopTyping()">Stop Typing</button>
+
+    <label>Check Online IDs (1,2,3)</label>
+    <input type="text" id="onlineIds" />
+    <button onclick="checkOnline()">Check Online</button>
+
+  </div>
+
+  <!-- RIGHT: CHAT UI -->
+  <div class="main">
+
+    <div class="topbar">
+      <strong>Status:</strong> <span id="status">Disconnected</span> | 
+      <strong>Conversation:</strong> <span id="activeConversation">None</span>
+    </div>
+
+    <div id="chatWindow" class="chat-window"></div>
+
+    <div class="input-bar">
+      <input type="text" id="messageContent" placeholder="Type message..." style="flex:1" />
+      <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <div class="log-panel" id="logPanel"></div>
+
+  </div>
+
+</div>
+
+<script>
+  let socket = null;
+  const BASE_URL = "http://localhost:3010";
+
+  function logSystem(text) {
+    const panel = document.getElementById("logPanel");
+    panel.innerText += text + "\n";
+    panel.scrollTop = panel.scrollHeight;
+  }
+
+  function addChatMessage(text, type = "system") {
+    const box = document.getElementById("chatWindow");
+    const div = document.createElement("div");
+    div.className = `msg ${type}`;
+    div.innerText = text;
+    box.appendChild(div);
+    box.scrollTop = box.scrollHeight;
+  }
+
+  function setStatus(text) {
+    document.getElementById("status").innerText = text;
+  }
+
+  function connectSocket() {
+    const token = document.getElementById("token").value.trim();
+    if (!token) return alert("Enter JWT token");
+
+    socket = io(BASE_URL, { auth: { token } });
+
+    socket.on("connect", () => {
+      setStatus("Connected");
+      logSystem(`Connected: ${socket.id}`);
+    });
+
+    socket.on("new_message", (data) => {
+      addChatMessage(`User ${data.senderId}: ${data.content}`, "other");
+      logSystem("Event: new_message -> " + JSON.stringify(data));
+    });
+
+    socket.on("message_notification", (data) => {
+      logSystem("Event: message_notification -> " + JSON.stringify(data));
+    });
+
+    socket.on("user_joined", (data) => {
+      logSystem("Event: user_joined -> " + JSON.stringify(data));
+    });
+
+    socket.on("user_left", (data) => {
+      logSystem("Event: user_left -> " + JSON.stringify(data));
+    });
+
+    socket.on("user_typing", (data) => {
+      logSystem("Event: user_typing -> " + JSON.stringify(data));
+    });
+
+    socket.on("user_stopped_typing", (data) => {
+      logSystem("Event: user_stopped_typing -> " + JSON.stringify(data));
+    });
+
+    socket.on("messages_read", (data) => {
+      logSystem("Event: messages_read -> " + JSON.stringify(data));
+    });
+
+    socket.on("online_status", (data) => {
+      logSystem("Event: online_status -> " + JSON.stringify(data));
+    });
+
+    socket.on("error", (err) => {
+      logSystem("Socket error: " + JSON.stringify(err));
+    });
+
+    socket.on("disconnect", () => {
+      setStatus("Disconnected");
+      logSystem("Disconnected");
+    });
+  }
+
+  function joinPersonalRoom() {
+    if (!socket) return alert("Connect socket first");
+    socket.emit("join_personal_room");
+    logSystem("Emit: join_personal_room");
+  }
+
+  function joinConversation() {
+    if (!socket) return alert("Connect socket first");
+    const conversationId = Number(document.getElementById("conversationId").value);
+    if (!conversationId) return alert("Enter conversationId");
+
+    socket.emit("join_conversation", { conversationId });
+    document.getElementById("activeConversation").innerText = conversationId;
+    logSystem(`Emit: join_conversation -> ${conversationId}`);
+  }
+
+  function leaveConversation() {
+    if (!socket) return alert("Connect socket first");
+    const conversationId = Number(document.getElementById("conversationId").value);
+    if (!conversationId) return alert("Enter conversationId");
+
+    socket.emit("leave_conversation", { conversationId });
+    document.getElementById("activeConversation").innerText = "None";
+    logSystem(`Emit: leave_conversation -> ${conversationId}`);
+  }
+
+  function sendMessage() {
+    if (!socket) return alert("Connect socket first");
+    const conversationId = Number(document.getElementById("conversationId").value);
+    const receiverId = Number(document.getElementById("receiverId").value);
+    const content = document.getElementById("messageContent").value.trim();
+
+    if (!conversationId || !receiverId || !content) {
+      return alert("conversationId, receiverId and content are required");
+    }
+
+    socket.emit("send_message", { conversationId, receiverId, content });
+    addChatMessage(`Me: ${content}`, "me");
+    logSystem("Emit: send_message -> " + JSON.stringify({ conversationId, receiverId, content }));
+    document.getElementById("messageContent").value = "";
+  }
+
+  function sendTyping() {
+    if (!socket) return alert("Connect socket first");
+    const conversationId = Number(document.getElementById("conversationId").value);
+    if (!conversationId) return alert("Enter conversationId");
+
+    socket.emit("typing", { conversationId });
+    logSystem(`Emit: typing -> ${conversationId}`);
+  }
+
+  function sendStopTyping() {
+    if (!socket) return alert("Connect socket first");
+    const conversationId = Number(document.getElementById("conversationId").value);
+    if (!conversationId) return alert("Enter conversationId");
+
+    socket.emit("stop_typing", { conversationId });
+    logSystem(`Emit: stop_typing -> ${conversationId}`);
+  }
+
+  function markAsRead() {
+    if (!socket) return alert("Connect socket first");
+    const conversationId = Number(document.getElementById("conversationId").value);
+    if (!conversationId) return alert("Enter conversationId");
+
+    socket.emit("mark_as_read", { conversationId });
+    logSystem(`Emit: mark_as_read -> ${conversationId}`);
+  }
+
+  function checkOnline() {
+    if (!socket) return alert("Connect socket first");
+    const ids = document.getElementById("onlineIds").value
+      .split(",")
+      .map(v => Number(v.trim()))
+      .filter(Boolean);
+
+    socket.emit("check_online", { userIds: ids });
+    logSystem(`Emit: check_online -> ${ids.join(", ")}`);
+  }
+</script>
+
+</body>
+</html>
