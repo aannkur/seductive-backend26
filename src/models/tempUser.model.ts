@@ -7,7 +7,7 @@ interface TempUserAttributes {
   account_type: "Client" | "Escort" | "Creator" | "Admin";
   display_name: string;
   email: string;
-  city: string;
+  city: number;
   password: string;
   adult_policy: boolean;
   current_otp: string | null;
@@ -41,7 +41,7 @@ class TempUser
   public account_type!: "Client" | "Escort" | "Creator" | "Admin";
   public display_name!: string;
   public email!: string;
-  public city!: string;
+  public city!: number;
   public password!: string;
   public adult_policy!: boolean;
   public current_otp!: string | null;
@@ -87,7 +87,7 @@ TempUser.init(
 
     // City
     city: {
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
 

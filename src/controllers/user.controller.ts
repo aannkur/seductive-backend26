@@ -31,11 +31,9 @@ export const updateUserProfileController = async (
 
     // Check if client_preferences is in the payload and user is a Client
     const { client_preferences, ...restBody } = req.body;
-
     if (client_preferences) {
       // Fetch user to check role
       const user = await User.findByPk(userId);
-
       if (!user) {
         const response: ApiResponse<null> = {
           success: false,

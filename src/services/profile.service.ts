@@ -8,6 +8,7 @@ import ClientPreferences from "../models/clientPreferences.model";
 import Tag from "../models/tag.model";
 import { deleteFileFromS3 } from "../utils/s3.utils";
 import { MESSAGES } from "../constants/messages";
+import { City } from "../models";
 
 /**
  * Format gallery data into object with public and private arrays
@@ -72,13 +73,13 @@ export const updateUserProfileService = async (data: {
   // Availability (array of objects, optional)
   availability?: Array<{
     days_of_week:
-      | "monday"
-      | "tuesday"
-      | "wednesday"
-      | "thursday"
-      | "friday"
-      | "saturday"
-      | "sunday";
+    | "monday"
+    | "tuesday"
+    | "wednesday"
+    | "thursday"
+    | "friday"
+    | "saturday"
+    | "sunday";
     start_time: string;
     end_time: string;
   }>;
@@ -127,7 +128,6 @@ export const updateUserProfileService = async (data: {
       "profile_bio",
       "dob",
       "age",
-      "city",
       "country",
       "extra",
       "note",
@@ -136,6 +136,21 @@ export const updateUserProfileService = async (data: {
       "profile_photo",
     ];
 
+
+    // ---- CITY NAME → ID CONVERSION ----
+    if (userFields.city !== undefined) {
+      const cityRecord = await City.findOne({
+        where: { name: userFields.city },
+        transaction,
+      });
+
+      if (!cityRecord) {
+        await transaction.rollback();
+        throw new Error("City not found");
+      }
+
+      userUpdateData.city = cityRecord.id; // ✅ integer
+    }
     for (const field of allowedUserFields) {
       if (userFields[field as keyof typeof userFields] !== undefined) {
         userUpdateData[field] = userFields[field as keyof typeof userFields];
@@ -665,35 +680,42 @@ export const getUserProfileService = async (userId: number) => {
       }).catch(() => []),
       user.role === "Escort"
         ? UserRates.findAll({
-            where: { user_id: userId },
-            order: [["type", "ASC"]],
-          }).catch(() => [])
+          where: { user_id: userId },
+          order: [["type", "ASC"]],
+        }).catch(() => [])
         : Promise.resolve([]),
       user.role === "Client"
         ? ClientPreferences.findOne({
-            where: { user_id: userId },
-          })
-            .then((prefs) =>
-              prefs
-                ? {
-                    id: prefs.id,
-                    user_id: prefs.user_id,
-                    city: prefs.city,
-                    preferences: prefs.preferences,
-                    bio: prefs.bio,
-                    tags: prefs.tags,
-                    createdAt: prefs.createdAt,
-                    updatedAt: prefs.updatedAt,
-                  }
-                : null
-            )
-            .catch(() => null)
+          where: { user_id: userId },
+        })
+          .then((prefs) =>
+            prefs
+              ? {
+                id: prefs.id,
+                user_id: prefs.user_id,
+                city: prefs.city,
+                preferences: prefs.preferences,
+                bio: prefs.bio,
+                tags: prefs.tags,
+                createdAt: prefs.createdAt,
+                updatedAt: prefs.updatedAt,
+              }
+              : null
+          )
+          .catch(() => null)
         : Promise.resolve(null),
     ]);
 
   // Format gallery data using common helper
   const formattedGallery = formatGalleryData(gallery);
 
+  let city = null;
+  if (user.city !== null && user.city !== undefined) {
+    city = await City.findOne({
+      where: { id: user.city as number },
+    });
+  }
+  console.log(city?.dataValues.name, "this is success")
   return {
     message: MESSAGES.PROFILE_FETCHED,
     user: {
@@ -706,7 +728,7 @@ export const getUserProfileService = async (userId: number) => {
       profile_bio: user.profile_bio,
       dob: user.dob,
       age: user.age,
-      city: user.city,
+      city: city?.dataValues.name,
       country: user.country,
       extra: user.extra,
       note: user.note,

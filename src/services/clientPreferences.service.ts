@@ -1,6 +1,8 @@
 import ClientPreferences from "../models/clientPreferences.model";
 import User from "../models/user.model";
 import { MESSAGES } from "../constants/messages";
+import { City } from "../models";
+import { Op } from "sequelize";
 
 /**
  * Create or Update Client Preferences
@@ -12,7 +14,27 @@ export const saveClientPreferencesService = async (data: {
   bio?: string | null;
   tags?: string[] | null;
 }) => {
-  const { user_id, city, preferences, bio, tags } = data;
+  const { user_id, preferences, bio, tags } = data;
+  const cityName = data.city
+
+  if (!cityName) {
+    throw new Error("City is required");
+  }
+
+ const city = await City.findOne({
+  where: {
+    name: {
+      [Op.iLike]: cityName
+    }
+  }
+});
+
+    console.log(city,"this is city for now")
+    if (!city) {
+      throw new Error("City not found");
+    }
+
+    console.log("this is row in db",city)
 
   // Verify user exists and is a Client
   const user = await User.findByPk(user_id);
@@ -33,7 +55,7 @@ export const saveClientPreferencesService = async (data: {
   if (clientPreferences) {
     // Update existing preferences (only update provided fields)
     if (city !== undefined) {
-      clientPreferences.city = city;
+      clientPreferences.city = city.id;
     }
     if (preferences !== undefined) {
       clientPreferences.preferences = preferences;
@@ -46,10 +68,11 @@ export const saveClientPreferencesService = async (data: {
     }
     await clientPreferences.save();
   } else {
+    const cityId = city.id;
     // Create new preferences
     clientPreferences = await ClientPreferences.create({
       user_id,
-      city: city ?? null,
+      city: cityId ?? null,
       preferences: preferences ?? null,
       bio: bio ?? null,
       tags: tags ?? null,
@@ -105,7 +128,17 @@ export const updateClientPreferencesService = async (data: {
 
   // Update existing preferences (only update provided fields)
   if (city !== undefined) {
-    clientPreferences.city = city;
+    if (city) {
+      const cityRecord = await City.findOne({
+        where: { id: city }
+      });
+      if (!cityRecord) {
+        throw new Error("City not found");
+      }
+      clientPreferences.city = cityRecord.id;
+    } else {
+      clientPreferences.city = null;
+    }
   }
   if (preferences !== undefined) {
     clientPreferences.preferences = preferences;

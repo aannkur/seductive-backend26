@@ -14,6 +14,7 @@ import NewsLetter from "./NewsLetter.route"
 import Setting from "./setting.routes"
 import Admin from "./admin/index"
 import Faq from "./getfaq.route"
+import Ad from "./adv.route"
 
 const router = Router();
 
@@ -43,5 +44,7 @@ router.use("/setting",Setting);
 router.use("/admin",Admin)
 // faq routes
 router.use("/faq",Faq)
+// Ad routes
+router.use("/ad",Ad)
 
 export default router;

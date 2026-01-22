@@ -8,6 +8,8 @@ import {
 } from "../utils/sendEmail";
 import { generateToken } from "../utils/jwt.utils";
 import { MESSAGES } from "../constants/messages";
+import { City } from "../models";
+import { where, fn, col } from "sequelize";
 
 // Constants for OTP limits
 const OTP_LIMIT = 3; // Max 3 OTP attempts
@@ -95,8 +97,20 @@ export const signupService = async (data: {
   password: string;
   adult_policy?: boolean;
 }) => {
-  const { account_type, display_name, email, city, password, adult_policy } =
+  const { account_type, display_name, email, password, adult_policy } =
     data;
+  const cityName = data.city;
+  const city = await City.findOne({
+    where: where(
+      fn("LOWER", col("name")),
+      cityName.trim().toLowerCase()
+    )
+  })
+  if (!city) {
+    throw new Error("City not found");
+  }
+  const cityId = city.id;
+
 
   // Check if email already exists in Users table
   const existingUser = await User.findOne({ where: { email } });
@@ -151,7 +165,7 @@ export const signupService = async (data: {
     if (
       tempUser.first_otp_attempt_at &&
       Date.now() - new Date(tempUser.first_otp_attempt_at).getTime() >=
-        OTP_WINDOW_MINUTES * 60 * 1000
+      OTP_WINDOW_MINUTES * 60 * 1000
     ) {
       tempUser.otp_attempts = 0;
       tempUser.first_otp_attempt_at = null;
@@ -161,7 +175,7 @@ export const signupService = async (data: {
     const otp = generateOTP();
     tempUser.account_type = account_type;
     tempUser.display_name = display_name;
-    tempUser.city = city;
+    tempUser.city = cityId;
     tempUser.password = hashedPassword;
     tempUser.adult_policy = adult_policy ?? true;
     tempUser.current_otp = otp;
@@ -180,7 +194,7 @@ export const signupService = async (data: {
       account_type,
       display_name,
       email,
-      city,
+      city: cityId,
       password: hashedPassword,
       adult_policy: adult_policy ?? true,
       current_otp: otp,
@@ -276,7 +290,7 @@ export const resendOtpService = async (data: { email: string }) => {
   if (
     tempUser.first_otp_attempt_at &&
     Date.now() - new Date(tempUser.first_otp_attempt_at).getTime() >=
-      OTP_WINDOW_MINUTES * 60 * 1000
+    OTP_WINDOW_MINUTES * 60 * 1000
   ) {
     tempUser.otp_attempts = 0;
     tempUser.first_otp_attempt_at = null;
@@ -481,7 +495,7 @@ export const forgotPasswordService = async (data: { email: string }) => {
   if (
     user.reset_password_otp_first_attempt_at &&
     Date.now() - new Date(user.reset_password_otp_first_attempt_at).getTime() >=
-      OTP_WINDOW_MINUTES * 60 * 1000
+    OTP_WINDOW_MINUTES * 60 * 1000
   ) {
     user.reset_password_otp_attempts = 0;
     user.reset_password_otp_first_attempt_at = null;
@@ -885,7 +899,7 @@ export const resendLoginOtpService = async (data: { email: string }) => {
   if (
     user.login_otp_first_attempt_at &&
     Date.now() - new Date(user.login_otp_first_attempt_at).getTime() >=
-      OTP_WINDOW_MINUTES * 60 * 1000
+    OTP_WINDOW_MINUTES * 60 * 1000
   ) {
     user.login_otp_attempts = 0;
     user.login_otp_first_attempt_at = null;

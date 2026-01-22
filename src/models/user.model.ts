@@ -14,7 +14,7 @@ interface UserAttributes {
   role: "Admin" | "Creator" | "Client" | "Escort";
   dob: string | null;
   age: number | null;
-  city: string | null;
+  city: number | null;
   country: string | null;
   extra: string | null;
   note: string | null;
@@ -61,7 +61,7 @@ class User
   public role!: "Admin" | "Creator" | "Client" | "Escort";
   public dob!: string | null;
   public age!: number | null;
-  public city!: string | null;
+  public city!: number | null;
   public country!: string | null;
   public extra!: string | null;
   public note!: string | null;
@@ -145,7 +145,7 @@ User.init(
 
     // Address Information
     city: {
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
       allowNull: true,
     },
     country: {

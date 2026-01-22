@@ -11,6 +11,7 @@ import UserAvailability from "./userAvailability.model";
 import UserRates from "./userRates.model";
 import ContactUs from "./contact-us.model";
 import Faq from "./faq.model";
+import Ad from "./ad.model"
 
 // Export all models
 export {
@@ -25,7 +26,8 @@ export {
   UserAvailability,
   UserRates,
   ContactUs,
-  Faq
+  Faq,
+  Ad
 };
 export default {
   User,
@@ -39,5 +41,6 @@ export default {
   UserAvailability,
   UserRates,
   ContactUs,
-  Faq
+  Faq,
+  Ad
 };

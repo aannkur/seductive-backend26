@@ -5,7 +5,7 @@ import sequelize from "../config/db";
 interface ClientPreferencesAttributes {
   id: number;
   user_id: number;
-  city: string | null;
+  city: number | null;
   preferences: string[] | null; // Array of vibe preferences
   bio: string | null;
   tags: string[] | null; // Array of tags
@@ -29,7 +29,7 @@ class ClientPreferences
 {
   public id!: number;
   public user_id!: number;
-  public city!: string | null;
+  public city!: number | null;
   public preferences!: string[] | null;
   public bio!: string | null;
   public tags!: string[] | null;
@@ -62,7 +62,7 @@ ClientPreferences.init(
 
     // Location
     city: {
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
       allowNull: true,
     },
 
