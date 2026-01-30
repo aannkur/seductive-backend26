@@ -59,17 +59,17 @@ export const CreateAdController = async (
     }
 }
 
-export const GetVipAds = async (
-    req:Request,
-    res:Response
-):Promise<Response> =>{
-    try {
+// export const GetVipAds = async (
+//     req:Request,
+//     res:Response
+// ):Promise<Response> =>{
+//     try {
         
-    } catch (error) {
-        return res.status(500).json({
-            success: false,
-            message: "Server error",
-            error: error instanceof Error ? error.message :"Unknown error ",
-        });
-    }
-}
+//     } catch (error) {
+//         return res.status(500).json({
+//             success: false,
+//             message: "Server error",
+//             error: error instanceof Error ? error.message :"Unknown error ",
+//         });
+//     }
+// }
